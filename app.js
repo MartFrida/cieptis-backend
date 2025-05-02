@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import { franc } from 'franc';
 import dotenv from 'dotenv';
+import cors from 'cors';
 
 import askGPT from './gptService.js';
 import searchKnowledgeBase from './dbService.js';
@@ -10,6 +11,7 @@ dotenv.config();
 
 const app = express();
 app.use(bodyParser.json());
+app.use(cors());
 
 app.post('/ask', async (req, res) => {
     try {
