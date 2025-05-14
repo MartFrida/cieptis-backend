@@ -7,17 +7,20 @@ const openai = new OpenAI({
 });
 
 async function askGPT(query, lang) {
-  const completion = await openai.chat.completions.create({
-    model: "gpt-3.5-turbo",
-    messages: [
-      {
-        role: 'system',
-        content: `Отвечай на языке: ${lang}. Ты — виртуальный ассистент Centro Entrenadores в Барселоне.
-
+  lang = ['es', 'ca', 'en', 'ru'].includes(lang) ? lang : 'es';
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      messages: [
+        {
+          role: 'system',
+          content: `Отвечай на языке: ${lang}. Ты — виртуальный ассистент Centro Entrenadores в Барселоне.
+Отвечай с использованием Markdown-разметки, чтобы ссылки были кликабельными.
 Ты помогаешь пользователям сайта https://centroentrenadores.com узнать о наших тренировках, детских секциях, индивидуальных программах и услугах по питанию.
 
 Пользователь уже находится на сайте, поэтому не нужно предлагать “перейти на сайт”. Вместо этого:
-— направляй на конкретные страницы сайта (например: /programas, /infantiles, /nutricion);
+— направляй на конкретные страницы сайта (например: /entrenador-personal, /clases-infantiles, /nutrition ). Если человек спрашивает про бокс, давай ссылку: https://centroentrenadores.com/entrenador-personal#boxing
+Не придумывай URL-адреса. Используй только существующие и проверенные ссылки;
 — если человек хочет записаться, предлагай заполнить форму регистрации по ссылке: https://centroentrenadores.com/contacto.
 
 Всегда подчёркивай:
@@ -30,16 +33,24 @@ async function askGPT(query, lang) {
 
 Не извиняйся без необходимости. Не направляй пользователя на сторонние ресурсы. Работай как цифровой помощник центра.
         `,
-      },
-      {
-        role: 'user',
-        content: query,
-      },
-    ],
-    temperature: 0.7,
-  });
+        },
+        {
+          role: 'user',
+          content: query,
+        },
+      ],
+      temperature: 0.7,
+    });
 
-  return completion.choices[0].message.content;
+    return completion.choices[0].message.content;
+  } catch (error) {
+    console.error('OpenAI API error:', error);
+    return lang === 'es'
+      ? 'Lo siento, ha habido un error. Inténtalo de nuevo más tarde.'
+      : lang === 'ca'
+        ? 'Ho sento, hi ha hagut un error. Torna-ho a provar més tard.'
+        : 'Sorry, there was an error. Please try again later.';
+  }
 }
 
-export default askGPT;
+export default askGPT
