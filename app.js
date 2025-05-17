@@ -11,11 +11,19 @@ dotenv.config();
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cors());
+
+app.use(cors({
+    origin: ['https://centroentrenadores.com', 'http://localhost:5173', 'http://localhost:3000', 'https://entrenador-personal.netlify.app'],
+    methods: ['GET', 'POST', 'OPTIONS'],
+    credentials: true
+}));
 
 app.post('/ask', async (req, res) => {
     try {
-        const { query } = req.body;
+        const { query, language } = req.body;
+        console.log("Received query:", query);
+        console.log("Detected language:", language);
+
         if (!query) return res.status(400).json({ error: 'No query provided' });
 
         // Определение языка
