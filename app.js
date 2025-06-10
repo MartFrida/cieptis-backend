@@ -13,19 +13,7 @@ const app = express();
 app.use(bodyParser.json());
 
 app.use(cors({
-    origin: (origin, callback) => {
-        const allowedOrigins = [
-            'https://centroentrenadores.com', 'http://localhost:5173', 'http://localhost:3000', 'https://entrenador-personal.netlify.app'
-        ];
-        if (origin && allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else if (!origin) {
-            // например, при локальной разработке без origin
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
+    origin: '*', // Разрешить все источники (для теста)
     methods: ['GET', 'POST', 'OPTIONS'],
     credentials: true
 }));
