@@ -13,7 +13,7 @@ const app = express();
 app.use(bodyParser.json());
 
 app.use(cors({
-    origin: ['https://centroentrenadores.com', 'http://localhost:5173', 'http://localhost:3000', 'https://entrenador-personal.netlify.app'],
+    origin: ['https://centroentrenadores.com', 'http://localhost:5173', 'http://localhost:3000', 'https://entrenador-personal.netlify.app', 'https://cieptis-backend.netlify.app/', 'https://cieptis-backend.vercel.app/'],
     methods: ['GET', 'POST', 'OPTIONS'],
     credentials: true
 }));
