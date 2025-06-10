@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import { franc } from 'franc';
 import dotenv from 'dotenv';
-import cors from 'cors';
+// import cors from 'cors';
 
 import askGPT from './gptService.js';
 import searchKnowledgeBase from './dbService.js';
@@ -12,11 +12,31 @@ dotenv.config();
 const app = express();
 app.use(bodyParser.json());
 
-app.use(cors({
-    origin: 'http://localhost:5173',
-    methods: ['GET', 'POST', 'OPTIONS'],
-    credentials: true
-}));
+const allowedOrigins = [
+    'https://centroentrenadores.com',
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'https://entrenador-personal.netlify.app'
+];
+
+// Обработка CORS с динамическим выбором origin
+app.use((req, res, next) => {
+    const origin = req.headers.origin;
+    if (allowedOrigins.includes(origin)) {
+        res.header('Access-Control-Allow-Origin', origin);
+        res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+        res.header('Access-Control-Allow-Credentials', 'true');
+
+        if (req.method === 'OPTIONS') {
+            // Обработка preflight-запроса
+            return res.sendStatus(200);
+        }
+    }
+    next();
+});
+
+// Можно оставить cors без опций или закомментировать, так как мы делаем настройку вручную
+// app.use(cors({ credentials: true }));
 
 app.post('/ask', async (req, res) => {
     try {
