@@ -1,6 +1,6 @@
 [build]
   functions = "netlify-built/functions"
-  publish = "dist"
+  
 
 [[redirects]]
   from = "/ask"
