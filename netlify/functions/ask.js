@@ -1,6 +1,6 @@
-const { franc } = require('franc');
-const askGPT = require('../../gptService.js');
-const searchKnowledgeBase = require('../../dbService.js');
+import { franc } from 'franc';
+import askGPT from '../../gptService.js';
+// import searchKnowledgeBase from '../../dbService.js';
 
 export default async function handler(event, context) {
   if (event.httpMethod === 'OPTIONS') {
@@ -36,14 +36,14 @@ export default async function handler(event, context) {
   const langCode = franc(query);
   const lang = langCode === 'und' ? 'unknown' : langCode;
 
-  const localAnswer = await searchKnowledgeBase(query);
-  if (localAnswer) {
-    return {
-      statusCode: 200,
-      headers: { 'Access-Control-Allow-Origin': '*' },
-      body: JSON.stringify({ answer: localAnswer, source: 'local', language: lang })
-    };
-  }
+  // const localAnswer = await searchKnowledgeBase(query);
+  // if (localAnswer) {
+  //   return {
+  //     statusCode: 200,
+  //     headers: { 'Access-Control-Allow-Origin': '*' },
+  //     body: JSON.stringify({ answer: localAnswer, source: 'local', language: lang })
+  //   };
+  // }
 
   const gptAnswer = await askGPT(query, lang);
   return {

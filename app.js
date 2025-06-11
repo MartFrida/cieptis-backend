@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 
 import askGPT from './gptService.js';
-import searchKnowledgeBase from './dbService.js';
+// import searchKnowledgeBase from './dbService.js';
 
 dotenv.config();
 
@@ -30,11 +30,11 @@ app.post('/ask', async (req, res) => {
         const langCode = franc(query);
         const lang = langCode === 'und' ? 'unknown' : langCode;
 
-        // Попытка найти ответ в базе знаний
-        const localAnswer = await searchKnowledgeBase(query);
-        if (localAnswer) {
-            return res.json({ answer: localAnswer, source: 'local', language: lang });
-        }
+        // // Попытка найти ответ в базе знаний
+        // const localAnswer = await searchKnowledgeBase(query);
+        // if (localAnswer) {
+        //     return res.json({ answer: localAnswer, source: 'local', language: lang });
+        // }
 
         // GPT-ответ
         const gptAnswer = await askGPT(query, lang);
