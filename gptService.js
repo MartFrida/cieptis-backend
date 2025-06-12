@@ -1,5 +1,6 @@
 import { OpenAI } from 'openai';
 import dotenv from 'dotenv';
+import AbortController from "abort-controller"
 
 dotenv.config();
 const openai = new OpenAI({
@@ -119,6 +120,9 @@ async function askGPT(query, lang) {
           ? 'Пожалуйста, введите ваш вопрос.'
           : 'Please enter your question.';
   }
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8500); // максимум 8.5 секунд
+
   try {
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
@@ -133,11 +137,14 @@ async function askGPT(query, lang) {
         },
       ],
       temperature: 0.7,
+      signal: controller.signal,
     });
 
+    clearTimeout(timeout);
     return completion.choices[0].message.content;
   } catch (error) {
-    console.error('OpenAI API error:', error);
+    clearTimeout(timeout);
+    console.error('OpenAI error or timeout:', error);
     return lang === 'es'
       ? 'Lo siento, ha habido un error. Inténtalo de nuevo más tarde.'
       : lang === 'ca'

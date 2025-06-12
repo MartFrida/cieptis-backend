@@ -12,9 +12,10 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-    origin: ['http://localhost:5173', 'https://cieptis-backend.vercel.app'],
-    methods: ['GET', 'POST', 'OPTIONS'],
+    origin: ['http://localhost:5173', 'https://cieptis-backend.vercel.app', 'https://cieptis-frontend.vercel.app'],
+    methods: ['GET', 'POST', 'OPTIONS', 'PUT', 'PATCH', 'DELETE'],
     allowedHeaders: ['Content-Type'],
+    credentials: true
 }));
 
 app.options('*', cors());
