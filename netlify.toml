@@ -1,8 +1,8 @@
-[build]
-  functions = "netlify-built/functions"
-  
+[functions]
+  node_bundler = "esbuild"
 
 [[redirects]]
   from = "/ask"
   to = "/.netlify/functions/ask"
   status = 200
+  methods = ["POST", "OPTIONS"]
