@@ -2,25 +2,22 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/index.js",
+      "src": "api/ask.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
-      "src": "/(.*)",
-      "dest": "/api/index.js",
+      "src": "/ask",
+      "dest": "/api/ask.js",
       "methods": [
         "GET",
         "POST",
-        "OPTIONS",
-        "PUT",
-        "PATCH",
-        "DELETE"
+        "OPTIONS"
       ],
       "headers": {
         "Access-Control-Allow-Origin": "http://localhost:5173",
-        "Access-Control-Allow-Methods": "GET,OPTIONS,POST,PUT,PATCH,DELETE",
+        "Access-Control-Allow-Methods": "GET,OPTIONS,POST",
         "Access-Control-Allow-Headers": "Content-Type",
         "Access-Control-Allow-Credentials": "true"
       }

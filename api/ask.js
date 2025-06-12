@@ -1,11 +1,8 @@
 import express from 'express';
-import { franc } from 'franc';
-import dotenv from 'dotenv';
-import askGPT from '../gptService.js';
 import cors from 'cors';
 import serverless from 'serverless-http';
-
-dotenv.config();
+import { franc } from 'franc';
+import askGPT from '../gptService.js';
 
 const app = express();
 
@@ -13,14 +10,16 @@ app.use(express.json());
 
 app.use(cors({
     origin: ['http://localhost:5173', 'https://cieptis-backend.vercel.app', 'https://cieptis-frontend.vercel.app'],
-    methods: ['GET', 'POST', 'OPTIONS', 'PUT', 'PATCH', 'DELETE'],
+    methods: ['GET', 'POST', 'OPTIONS'],
     allowedHeaders: ['Content-Type'],
     credentials: true
 }));
 
-app.options('*', cors());
+app.options('*', (req, res) => {
+    res.sendStatus(200);
+});
 
-app.post('/ask', async (req, res) => {
+app.post('/', async (req, res) => {
     try {
         const { query } = req.body;
         if (!query) return res.status(400).json({ error: 'No query provided' });
@@ -37,5 +36,4 @@ app.post('/ask', async (req, res) => {
     }
 });
 
-// 👇 Вот тут магия: экспортируем как serverless handler
 export default serverless(app);
