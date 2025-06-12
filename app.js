@@ -12,7 +12,12 @@ dotenv.config();
 const app = express();
 app.use(bodyParser.json());
 
-app.use(cors());
+app.use(cors({
+    origin: ['http://localhost:5173', 'https://cieptis-frontend.vercel.app'],
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type'],
+}));
+app.options('*', cors());
 
 // app.use(cors({
 //     origin: '*', // Разрешить все источники (для теста)
