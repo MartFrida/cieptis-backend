@@ -1,39 +1,38 @@
-import express from 'express';
-import cors from 'cors';
-import serverless from 'serverless-http';
-import { franc } from 'franc';
-import askGPT from '../gptService.js';
-
-const app = express();
-
-app.use(express.json());
-
-app.use(cors({
-    origin: ['http://localhost:5173', 'https://cieptis-backend.vercel.app', 'https://cieptis-frontend.vercel.app'],
-    methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type'],
-    credentials: true
-}));
-
-app.options('*', (req, res) => {
-    res.sendStatus(200);
-});
-
-app.post('/', async (req, res) => {
-    try {
-        const { query } = req.body;
-        if (!query) return res.status(400).json({ error: 'No query provided' });
-
-        const langCode = franc(query);
-        const lang = langCode === 'und' ? 'unknown' : langCode;
-
-        const gptAnswer = await askGPT(query, lang);
-        res.json({ answer: gptAnswer, source: 'gpt', language: lang });
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Server error' });
+export default async function handler(req, res) {
+    if (req.method === 'OPTIONS') {
+        res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
+        res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
+        return res.status(200).end();
     }
-});
 
-export default serverless(app);
+    if (req.method === 'POST') {
+        const { OpenAI } = await import('openai');
+        const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+        const { query } = req.body;
+
+        if (!query) {
+            return res.status(400).json({ error: 'No query provided' });
+        }
+
+        try {
+            const completion = await openai.chat.completions.create({
+                model: 'gpt-3.5-turbo',
+                messages: [
+                    { role: 'system', content: 'Ты — виртуальный ассистент...' },
+                    { role: 'user', content: query },
+                ],
+                temperature: 0.7,
+            });
+
+            return res.status(200).json({ answer: completion.choices[0].message.content });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ error: 'OpenAI error' });
+        }
+    }
+
+    return res.status(405).end(); // method not allowed
+}
