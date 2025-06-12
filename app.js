@@ -12,11 +12,13 @@ dotenv.config();
 const app = express();
 app.use(bodyParser.json());
 
-app.use(cors({
-    origin: '*', // Разрешить все источники (для теста)
-    methods: ['GET', 'POST', 'OPTIONS'],
-    credentials: true
-}));
+app.use(cors());
+
+// app.use(cors({
+//     origin: '*', // Разрешить все источники (для теста)
+//     methods: ['GET', 'POST', 'OPTIONS'],
+//     credentials: true
+// }));
 
 app.post('/ask', async (req, res) => {
     try {
